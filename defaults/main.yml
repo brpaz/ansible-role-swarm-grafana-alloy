@@ -1,7 +1,7 @@
 ---
 alloy_cluster_name: "my-cluster"
 alloy_config_dir: /etc/alloy
-alloy_version: "v1.8.3"
+alloy_version: v1.8.3
 alloy_image: grafana/alloy:{{ alloy_version }}"
 alloy_swarm_networks:
   - name: "monitoring"
