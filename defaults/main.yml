@@ -1,14 +1,15 @@
 ---
 alloy_cluster_name: "my-cluster"
 alloy_config_dir: /etc/alloy
-alloy_image: grafana/alloy:v1.8.4
+alloy_version: "v1.8.3"
+alloy_image: grafana/alloy:{{ alloy_version }}"
 alloy_swarm_networks:
   - name: "monitoring"
 alloy_swarm_service_name: "alloy"
 
 # Docker service labels
 alloy_swarm_labels:
-  com.grafana.alloy.version: "v1.8.4"
+  com.grafana.alloy.version: "{{ alloy_version }}"
   com.grafana.alloy.component: "monitoring"
   com.grafana.alloy.description: "Grafana Alloy monitoring agent"
 
