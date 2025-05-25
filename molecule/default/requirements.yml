@@ -1,0 +1,5 @@
+collections:
+  - name: community.docker
+
+roles:
+  - src: geerlingguy.docker
