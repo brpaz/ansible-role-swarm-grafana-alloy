@@ -1,0 +1,18 @@
+
+//=================================================
+// Alloy Traefik integration
+// =================================================
+
+discovery.relabel "metrics_integrations_integrations_traefik" {
+	targets = [{
+		__address__ = "{{ alloy_integrations.traefik_address }}",
+    __metrics_path__ = "{{ alloy_integrations.traefik_metrics_path }}",
+	}]
+}
+
+prometheus.scrape "metrics_integrations_integrations_traefik" {
+	targets    = discovery.relabel.metrics_integrations_integrations_traefik.output
+	forward_to = [prometheus.remote_write.metrics_service.receiver]
+	job_name   = "integrations/traefik"
+  scrape_interval = "{{ alloy_integrations_traefik_scrape_interval }}"
+}

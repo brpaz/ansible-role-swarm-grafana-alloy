@@ -1,0 +1,24 @@
+// Alloy alerting rules configuration
+prometheus.rules "alerting_rules" {
+{% for alert_rule in alloy_alert_rules | default([]) %}
+  rule {
+    alert = "{{ alert_rule.alert }}"
+    expr  = "{{ alert_rule.expr }}"
+    for   = "{{ alert_rule.for | default('5m') }}"
+    {% if alert_rule.labels is defined %}
+    labels = {
+      {% for key, value in alert_rule.labels.items() %}
+      {{ key }} = "{{ value }}"{% if not loop.last %},{% endif %}
+      {% endfor %}
+    }
+    {% endif %}
+    {% if alert_rule.annotations is defined %}
+    annotations = {
+      {% for key, value in alert_rule.annotations.items() %}
+      {{ key }} = "{{ value }}"{% if not loop.last %},{% endif %}
+      {% endfor %}
+    }
+    {% endif %}
+  }
+{% endfor %}
+}

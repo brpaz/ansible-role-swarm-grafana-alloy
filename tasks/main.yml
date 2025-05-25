@@ -1,0 +1,172 @@
+---
+- name: Ensure alloy config dir exists
+  ansible.builtin.file:
+    path: "{{ alloy_config_dir }}"
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+  become: true
+
+- name: "Ensure alloy config file exists"
+  ansible.builtin.template:
+    src: config.alloy.j2
+    dest: "{{ alloy_config_dir }}/config.alloy"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+
+- name: Create config file for node exporter integration
+  ansible.builtin.template:
+    src: integrations/node_exporter.alloy.j2
+    dest: "{{ alloy_config_dir }}/node_exporter.alloy"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  when: alloy_integrations_node_exporter_enabled
+
+- name: Create config file for docker integration
+  ansible.builtin.template:
+    src: integrations/docker.alloy.j2
+    dest: "{{ alloy_config_dir }}/docker.alloy"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  when: alloy_integrations_docker_enabled
+
+- name: Create config file for traefik integration
+  ansible.builtin.template:
+    src: integrations/traefik.alloy.j2
+    dest: "{{ alloy_config_dir }}/traefik.alloy"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  when: alloy_integrations_traefik_enabled
+
+- name: Create config file for redis integration
+  ansible.builtin.template:
+    src: integrations/redis.alloy.j2
+    dest: "{{ alloy_config_dir }}/redis.alloy"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  when: alloy_integrations_redis_enabled
+
+- name: Create config file for Postgres integration
+  ansible.builtin.template:
+    src: integrations/postgres.alloy.j2
+    dest: "{{ alloy_config_dir }}/postgres.alloy"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  when: alloy_integrations_postgres_enabled
+
+- name: Create recording rules file
+  ansible.builtin.template:
+    src: rules/recording.alloy.j2
+    dest: "{{ alloy_config_dir }}/recording.alloy"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  when: alloy_recording_rules | length > 0
+
+- name: Create alerting rules file
+  ansible.builtin.template:
+    src: rules/alerting.alloy.j2
+    dest: "{{ alloy_config_dir }}/alerting.alloy"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  when: alloy_alert_rules | length > 0
+
+- name: Ensure alloy data volume exists
+  community.docker.docker_volume:
+    name: alloy_data
+    state: present
+
+- name: "Ensure alloy swarm service exists"
+  community.docker.docker_swarm_service:
+    name: "{{ alloy_swarm_service_name }}"
+    state: present
+    image: "{{ alloy_image }}"
+    networks: "{{ alloy_swarm_networks }}"
+    labels: "{{ alloy_swarm_labels | default({}) }}"
+    env: "{{ alloy_environment_variables | default({}) }}"
+    mounts:
+      - type: bind
+        source: "{{ alloy_config_dir }}"
+        target: /etc/alloy
+      - type: volume
+        source: alloy_data
+        target: /var/lib/alloy/data
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: "/"
+        target: /host/rootfs
+        readonly: true
+      - type: bind
+        source: "/sys"
+        target: /host/sys
+        readonly: true
+      - type: bind
+        source: "/var/log"
+        target: "/host/var/log"
+        readonly: true
+      - type: bind
+        source: "/proc"
+        target: "/host/proc"
+      - type: bind
+        source: "/var/lib/docker"
+        target: "/var/lib/docker"
+        readonly: true
+    command: ["alloy", "run"]
+    args:
+      - --server.http.listen-addr=0.0.0.0:{{ alloy_server_port }}
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    mode: global
+    restart_config:
+      condition: any
+    hostname: "{{ inventory_hostname }}"
+    publish:
+      - published_port: "{{ alloy_server_port }}"
+        target_port: "{{ alloy_server_port }}"
+        mode: host
+    reservations:
+      cpus: "{{ alloy_reservations_cpus }}"
+      memory: "{{ alloy_reservations_memory }}"
+    limits:
+      cpus: "{{ alloy_limits_cpus }}"
+      memory: "{{ alloy_limits_memory }}"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - |
+          bash -c '
+          exec 42<>/dev/tcp/localhost/{{ alloy_server_port }};
+          echo -e "GET /-/ready HTTP/1.1\nHost: localhost\nConnection: close\n\n" >&42;
+          head -1 <&42 | cut -d" " -f2 | grep -q "^200$" || exit 1;
+          exec 42<&-;
+          exec 42>&-'
+      interval: 5s
+      timeout: 2s
+      retries: 10
+      start_period: 10s
+
+- name: Wait for service to be in healthy state
+  ansible.builtin.command: docker ps --filter "name={{ alloy_swarm_service_name }}" --format {% raw %}"{{.Status}}"{% endraw %}
+  register: container_status
+  until: "'healthy' in container_status.stdout"
+  retries: 10
+  delay: 5
+  changed_when: false

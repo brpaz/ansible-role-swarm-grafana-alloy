@@ -1,0 +1,73 @@
+---
+alloy_cluster_name: "my-cluster"
+alloy_config_dir: /etc/alloy
+alloy_image: grafana/alloy:v1.8.4
+alloy_swarm_networks:
+  - name: "monitoring"
+alloy_swarm_service_name: "alloy"
+
+# Docker service labels
+alloy_swarm_labels:
+  com.grafana.alloy.version: "v1.8.4"
+  com.grafana.alloy.component: "monitoring"
+  com.grafana.alloy.description: "Grafana Alloy monitoring agent"
+
+alloy_logs_url: "https://logs-prod-us-central1.grafana.net/loki/api/v1/push"
+alloy_metrics_url: "https://prometheus-us-central1.grafana.net/api/prom/push"
+alloy_reservations_cpus: 0.5
+alloy_reservations_memory: 256M
+alloy_server_port: 12345
+alloy_limits_cpus: 1.0
+alloy_limits_memory: 512M
+alloy_log_level: "info"
+alloy_log_format: "json"
+
+alloy_integrations_node_exporter_enabled: true
+alloy_integrations_node_exporter_scrape_interval: "30s"
+alloy_integrations_docker_enabled: true
+alloy_integrations_traefik_enabled: false
+alloy_integrations_traefik_address: "traefik:8080"
+alloy_integrations_traefik_metrics_path: "/metrics"
+alloy_integrations_traefik_scrape_interval: "30s"
+alloy_integrations_redis_enabled: false
+alloy_integrations_redis_address: "redis:6379"
+alloy_integrations_redis_scrape_interval: "30s"
+alloy_integrations_postgres_enabled: false
+alloy_integrations_postgres_datasource_names: []
+alloy_integrations_postgres_scrape_interval: "30s"
+alloy_conf_import_files: []
+
+# Only for tests
+alloy_check_scrape_interval: "60s"
+alloy_logs_username: "change-me"
+alloy_logs_password: "change-me"
+alloy_metrics_username: "change-me"
+alloy_metrics_password: "change-me"
+
+# Environment variables for Alloy service
+alloy_environment_variables:
+  {}
+  # Example:
+  # ALLOY_LOG_FORMAT: "logfmt"
+  # ALLOY_LOG_LEVEL: "debug"
+
+# Prometheus rules configuration
+alloy_recording_rules:
+  []
+  # Example:
+  # - record: "instance:node_cpu:rate5m"
+  #   expr: "rate(node_cpu_seconds_total{mode='idle'}[5m])"
+  #   labels:
+  #     env: "production"
+
+alloy_alert_rules:
+  []
+  # Example:
+  # - alert: "HighCPUUsage"
+  #   expr: "100 - (avg by(instance) (irate(node_cpu_seconds_total{mode='idle'}[5m])) * 100) > 80"
+  #   for: "5m"
+  #   labels:
+  #     severity: "warning"
+  #   annotations:
+  #     summary: "High CPU usage on {{ $labels.instance }}"
+  #     description: "CPU usage is above 80% for 5 minutes"

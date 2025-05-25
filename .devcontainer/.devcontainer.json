@@ -1,0 +1,14 @@
+{
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "mkhl.direnv",
+        "redhat.ansible",
+        "task.vscode-task"
+      ]
+    }
+  },
+  "image": "ghcr.io/cachix/devenv:latest",
+  "overrideCommand": false,
+  "postCreateCommand": "direnv allow"
+}

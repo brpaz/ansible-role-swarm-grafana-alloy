@@ -1,0 +1,128 @@
+// Alloy configuration file
+// This file is managed by Ansible and should not be edited manually.
+
+// =================================================
+// Alloy general condiguration
+// =================================================
+logging {
+  level = "{{ alloy_log_level }}"
+  format = "{{ alloy_log_format }}"
+}
+
+// =================================================
+// Alloy remote write configuration
+// =================================================
+prometheus.remote_write "metrics_service" {
+  endpoint {
+    url = "{{ alloy_metrics_url }}"
+
+    basic_auth {
+      username = "{{ alloy_metrics_username }}"
+      password = "{{ alloy_metrics_password }}"
+    }
+  }
+
+  external_labels = { "cluster" = "{{ alloy_cluster_name }}" }
+}
+
+loki.write "logs_service" {
+  endpoint {
+    url = "{{ alloy_logs_url }}"
+
+    basic_auth {
+      username = "{{ alloy_logs_username }}"
+      password = "{{ alloy_logs_password }}"
+    }
+  }
+}
+
+// =================================================
+// Alloy check configuration
+// =================================================
+prometheus.exporter.self "alloy_check" { }
+
+discovery.relabel "alloy_check" {
+  targets = prometheus.exporter.self.alloy_check.targets
+
+  rule {
+    target_label = "instance"
+    replacement  = constants.hostname
+  }
+
+  rule {
+    target_label = "alloy_hostname"
+    replacement  = constants.hostname
+  }
+
+  rule {
+    target_label = "job"
+    replacement  = "integrations/alloy-check"
+  }
+}
+
+prometheus.scrape "alloy_check" {
+  targets    = discovery.relabel.alloy_check.output
+  forward_to = [prometheus.relabel.alloy_check.receiver]
+
+  scrape_interval = "{{ alloy_check_scrape_interval }}"
+}
+
+prometheus.relabel "alloy_check" {
+  forward_to = [prometheus.remote_write.metrics_service.receiver]
+
+  rule {
+    source_labels = ["__name__"]
+    regex         = "(prometheus_target_sync_length_seconds_sum|prometheus_target_scrapes_.*|prometheus_target_interval.*|prometheus_sd_discovered_targets|alloy_build.*|prometheus_remote_write_wal_samples_appended_total|process_start_time_seconds)"
+    action        = "keep"
+  }
+}
+
+{% if alloy_integrations_node_exporter_enabled %}
+import.file "integrations_node_exporter" {
+  filename = file.path_join(module_path, "node_exporter.alloy")
+}
+{% endif %}
+
+{% if alloy_integrations_docker_enabled %}
+import.file "integrations_docker" {
+  filename = file.path_join(module_path, "docker.alloy")
+}
+{% endif %}
+
+{% if alloy_integrations_traefik_enabled %}
+import.file "integrations_traefik" {
+  filename = file.path_join(module_path, "traefik.alloy")
+}
+{% endif %}
+
+{% if alloy_integrations_redis_enabled %}
+import.file "integrations_redis_exporter" {
+  filename = file.path_join(module_path, "redis.alloy")
+}
+{% endif %}
+
+{% if alloy_integrations_postgres_enabled %}
+import.file "integrations_postgres_exporter" {
+  filename = file.path_join(module_path, "postgres.alloy")
+}
+{% endif %}
+
+{% if alloy_import_files is defined %}
+{% for import_file in alloy_import_files %}
+import.file "{{ import_file.name }}" {
+  filename = file.path_join(module_path, import_file.filename)
+}
+{% endfor %}
+{% endif %}
+
+{% if alloy_recording_rules | length > 0 %}
+import.file "recording_rules" {
+  filename = file.path_join(module_path, "recording.alloy")
+}
+{% endif %}
+
+{% if alloy_alert_rules | length > 0 %}
+import.file "alerting_rules" {
+  filename = file.path_join(module_path, "alerting.alloy")
+}
+{% endif %}

@@ -1,0 +1,20 @@
+// Redis Alloy expoerter configuration
+prometheus.exporter.redis "integrations_redis_exporter" {
+	redis_addr = "{{ alloy_integrations_redis_address }}"
+}
+
+discovery.relabel "integrations_redis_exporter" {
+	targets = prometheus.exporter.redis.integrations_redis_exporter.targets
+
+	rule {
+		target_label = "job"
+		replacement  = "integrations/redis_exporter"
+	}
+}
+
+prometheus.scrape "integrations_redis_exporter" {
+	targets    = discovery.relabel.integrations_redis_exporter.output
+	forward_to = [prometheus.remote_write.metrics_service.receiver]
+	job_name   = "integrations/redis_exporter"
+  scrape_interval = "{{ alloy_integrations_redis_scrape_interval }}"
+}

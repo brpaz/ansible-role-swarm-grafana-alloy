@@ -1,0 +1,16 @@
+// Alloy recording rules configuration
+prometheus.rules "recording_rules" {
+{% for recording_rule in alloy_recording_rules | default([]) %}
+  rule {
+    record = "{{ recording_rule.record }}"
+    expr   = "{{ recording_rule.expr }}"
+    {% if recording_rule.labels is defined %}
+    labels = {
+      {% for key, value in recording_rule.labels.items() %}
+      {{ key }} = "{{ value }}"{% if not loop.last %},{% endif %}
+      {% endfor %}
+    }
+    {% endif %}
+  }
+{% endfor %}
+}
