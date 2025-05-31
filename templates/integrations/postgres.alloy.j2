@@ -14,9 +14,9 @@ prometheus.exporter.postgres "integrations_postgres_exporter" {
   autodiscovery {
     enabled            = {{ alloy_integrations_postgres_autodiscovery_enabled | default(false) }}
 
-    {% if alloy_integrations_postgres_autodiscovery_database_allowlist|length > 0 -%}
+    {% if alloy_integrations_postgres_autodiscovery_allowlist|length > 0 -%}
     database_allowlist = [
-      {% for db in alloy_integrations_postgres_autodiscovery_database_allowlist %}
+      {% for db in alloy_integrations_postgres_autodiscovery_allowlist %}
       "{{ db }}"{% if not loop.last %},{% endif %}
       {% endfor %}
     ]
