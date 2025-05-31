@@ -1,6 +1,6 @@
 
 prometheus.exporter.postgres "integrations_postgres_exporter" {
-  data_source_names = "{{ alloy_integrations.postgres.data_source_names}}"
+  data_source_names = "{{ alloy_integrations_postgres_data_source_names}}"
   enabled_collectors = ["database","wal","locks","replication","replication_slot","stat_database","stat_user_tables","stat_wal_receiver","statio_user_tables","statio_user_indexes","long_running_transactions"]
 }
 
