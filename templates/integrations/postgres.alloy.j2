@@ -1,11 +1,44 @@
 
 prometheus.exporter.postgres "integrations_postgres_exporter" {
-  data_source_names = "{{ alloy_integrations_postgres_data_source_names}}"
-  enabled_collectors = ["database","wal","locks","replication","replication_slot","stat_database","stat_user_tables","stat_wal_receiver","statio_user_tables","statio_user_indexes","long_running_transactions"]
+  data_source_names = [
+    {% for dsn in alloy_integrations_postgres_datasource_names %}
+    "{{ dsn }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  enabled_collectors = [
+    {% for collector in alloy_integrations_postgres_enabled_collectors %}
+    "{{ collector }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+
+  autodiscovery {
+    enabled            = {{ alloy_integrations_postgres_autodiscovery_enabled | default(false) }}
+
+    {% if alloy_integrations_postgres_autodiscovery_database_allowlist|length > 0 -%}
+    database_allowlist = [
+      {% for db in alloy_integrations_postgres_autodiscovery_database_allowlist %}
+      "{{ db }}"{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+    {% emdif -%}
+
+    {% if alloy_integrations_postgres_autodiscovery_database_denylist|length > 0 -%}
+    database_denylist = [
+      {% for db in alloy_integrations_postgres_autodiscovery_database_denylist %}
+      "{{ db }}"{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+    {% endif -%}
+  }
 }
 
 discovery.relabel "integrations_postgres_exporter" {
     targets = prometheus.exporter.postgres.integrations_postgres_exporter.targets
+
+    rule {
+      target_label = "instance"
+      replacement  = constants.hostname
+    }
 
     rule {
         target_label = "job"

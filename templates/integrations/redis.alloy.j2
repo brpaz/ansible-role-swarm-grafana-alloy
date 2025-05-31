@@ -6,6 +6,11 @@ prometheus.exporter.redis "integrations_redis_exporter" {
 discovery.relabel "integrations_redis_exporter" {
 	targets = prometheus.exporter.redis.integrations_redis_exporter.targets
 
+  rule {
+    target_label = "instance"
+    replacement  = constants.hostname
+  }
+
 	rule {
 		target_label = "job"
 		replacement  = "integrations/redis_exporter"
