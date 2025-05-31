@@ -5,8 +5,8 @@
 
 discovery.relabel "metrics_integrations_integrations_traefik" {
 	targets = [{
-		__address__ = "{{ alloy_integrations.traefik_address }}",
-    __metrics_path__ = "{{ alloy_integrations.traefik_metrics_path }}",
+		__address__ = "{{ alloy_integrations_traefik_address }}",
+    __metrics_path__ = "{{ alloy_integrations_traefik_metrics_path }}",
 	}]
 }
 
