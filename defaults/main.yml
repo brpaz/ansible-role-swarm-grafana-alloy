@@ -46,7 +46,6 @@ alloy_integrations_postgres_enabled_collectors:
   - "stat_statements"
   - "stat_user_tables"
   - "statio_user_tables"
-  - "wal"
 alloy_integrations_postgres_autodiscovery_enabled: true
 alloy_integrations_postgres_autodiscovery_allowlist: []
 alloy_integrations_postgres_autodiscovery_denylist: []
