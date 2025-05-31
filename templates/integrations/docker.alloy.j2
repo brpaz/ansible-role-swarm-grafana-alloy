@@ -1,13 +1,19 @@
-discovery.dockerswarm "dockerswarm_services" {
-  host = "unix:///var/run/docker.sock"
-  role = "services"
+prometheus.exporter.cadvisor "integrations_cadvisor" {
+    docker_only = true
 }
+discovery.relabel "integrations_cadvisor" {
+    targets = prometheus.exporter.cadvisor.integrations_cadvisor.targets
 
-prometheus.scrape "dockerswarm_services" {
-  targets    = discovery.dockerswarm.dockerswarm_services.targets
-  forward_to = [prometheus.remote_write.metrics_service.receiver]
+    rule {
+        target_label = "job"
+        replacement  = "integrations/docker"
+    }
+
+    rule {
+        target_label = "instance"
+        replacement  = constants.hostname
+    }
 }
-
 
 prometheus.relabel "integrations_cadvisor" {
 	forward_to = [prometheus.remote_write.metrics_service.receiver]
@@ -26,7 +32,7 @@ prometheus.scrape "integrations_cadvisor" {
 
 discovery.docker "logs_integrations_docker" {
     host             = "unix:///var/run/docker.sock"
-    refresh_interval = "10s"
+    refresh_interval = "5s"
 }
 discovery.relabel "logs_integrations_docker" {
     targets = []
@@ -48,20 +54,10 @@ discovery.relabel "logs_integrations_docker" {
     }
 
     rule {
-      source_labels = ["__meta_docker_container_label_com_docker_swarm_service_name"]
-      target_label  = "swarm_service"
-    }
-
-    rule {
         source_labels = ["__meta_docker_container_log_stream"]
         target_label  = "stream"
     }
-
-    rule {
-      source_labels = ["__meta_docker_container_label_com_docker_swarm_task_name"]
-      target_label  = "swarm_task"
-    }
-  }
+}
 loki.source.docker "logs_integrations_docker" {
     host             = "unix:///var/run/docker.sock"
     targets          = discovery.docker.logs_integrations_docker.targets
@@ -69,4 +65,3 @@ loki.source.docker "logs_integrations_docker" {
     relabel_rules    = discovery.relabel.logs_integrations_docker.rules
     refresh_interval = "5s"
 }
-

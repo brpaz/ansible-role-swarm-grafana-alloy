@@ -100,29 +100,3 @@ import.file "integrations_redis_exporter" {
   filename = file.path_join(module_path, "redis.alloy")
 }
 {% endif %}
-
-{% if alloy_integrations_postgres_enabled %}
-import.file "integrations_postgres_exporter" {
-  filename = file.path_join(module_path, "postgres.alloy")
-}
-{% endif %}
-
-{% if alloy_import_files is defined %}
-{% for import_file in alloy_import_files %}
-import.file "{{ import_file.name }}" {
-  filename = file.path_join(module_path, import_file.filename)
-}
-{% endfor %}
-{% endif %}
-
-{% if alloy_recording_rules | length > 0 %}
-import.file "recording_rules" {
-  filename = file.path_join(module_path, "recording.alloy")
-}
-{% endif %}
-
-{% if alloy_alert_rules | length > 0 %}
-import.file "alerting_rules" {
-  filename = file.path_join(module_path, "alerting.alloy")
-}
-{% endif %}
