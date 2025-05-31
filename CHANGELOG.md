@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v0.1.2 - 2025-05-31
+
+### What's Changed
+
+#### 🐛 Bug Fixes
+
+- fix: wrong traefik integration variable names @brpaz (#2)
+
+#### ⚠️ Maintenance
+
+- ci(github-actions): fix galaxy branch @brpaz (#1)
+  **Full Changelog**: [https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.1...v0.1.2](https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.1...v0.1.2)
+
 ## v0.1.1 - 2025-05-25
 
 ### What's Changed
