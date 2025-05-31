@@ -4,6 +4,10 @@
 // =================================================
 
 discovery.relabel "metrics_integrations_integrations_traefik" {
+  rule {
+    target_label = "instance"
+    replacement  = constants.hostname
+  }
 	targets = [{
 		__address__ = "{{ alloy_integrations_traefik_address }}",
     __metrics_path__ = "{{ alloy_integrations_traefik_metrics_path }}",

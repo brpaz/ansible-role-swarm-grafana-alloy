@@ -35,6 +35,22 @@ alloy_integrations_redis_address: "redis:6379"
 alloy_integrations_redis_scrape_interval: "30s"
 alloy_integrations_postgres_enabled: false
 alloy_integrations_postgres_datasource_names: []
+alloy_integrations_postgres_enabled_collectors:
+  - "database"
+  - "wal"
+  - "locks"
+  - "replication"
+  - "replication_slot"
+  - "stat_bgwriter"
+  - "stat_database"
+  - "stat_statements"
+  - "stat_user_tables"
+  - "statio_user_tables"
+  - "wal"
+alloy_integrations_postgres_autodiscovery_enabled: true
+alloy_integrations_postgres_autodiscovery_allowlist: []
+alloy_integrations_postgres_autodiscovery_denylist: []
+
 alloy_integrations_postgres_scrape_interval: "30s"
 alloy_conf_import_files: []
 
