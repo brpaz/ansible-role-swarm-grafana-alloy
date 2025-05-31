@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.1.4 - 2025-05-31
+
+### What's Changed
+
+- fix(integration-postgres): wrong data source names variable name @brpaz (#3)
+  **Full Changelog**: [https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.3...v0.1.4](https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.3...v0.1.4)
+
 ## v0.1.3 - 2025-05-31
 
 ### What's Changed
@@ -7,7 +14,7 @@
 #### 🐛 Bug Fixes
 
 - fix: rewrite way of loading multiple config files @brpaz
-   **Full Changelog**: [https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.2...v0.1.3](https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.2...v0.1.3)
+  **Full Changelog**: [https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.2...v0.1.3](https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.2...v0.1.3)
 
 ## v0.1.2 - 2025-05-31
 
