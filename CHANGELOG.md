@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.2 - 2025-06-01
+
+### What's Changed
+
+- Fix/postgres @brpaz (#6)
+  **Full Changelog**: [https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.2.1...v0.2.2](https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.2.1...v0.2.2)
+
 ## v0.2.1 - 2025-06-01
 
 ### What's Changed
