@@ -22,9 +22,9 @@ prometheus.exporter.postgres "integrations_postgres_exporter" {
     ]
     {% endif -%}
 
-    {% if alloy_integrations_postgres_autodiscovery_database_denylist|length > 0 -%}
+    {% if alloy_integrations_postgres_autodiscovery_denylist|length > 0 -%}
     database_denylist = [
-      {% for db in alloy_integrations_postgres_autodiscovery_database_denylist %}
+      {% for db in alloy_integrations_postgres_autodiscovery_denylist %}
       "{{ db }}"{% if not loop.last %},{% endif %}
       {% endfor %}
     ]

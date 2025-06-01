@@ -1,4 +1,3 @@
-
 # Ansible Role: Grafana Alloy
 
 > An Ansible role to deploy [Grafana Alloy](https://grafana.com/docs/alloy/latest/) monitoring stack in a Docker Swarm cluster.
@@ -98,21 +97,25 @@ alloy_swarm_labels:
 
 ### Integration Configuration
 
-| Variable                                           | Description                      | Default Value    |
-| -------------------------------------------------- | -------------------------------- | ---------------- |
-| `alloy_integrations_node_exporter_enabled`         | Enable Node Exporter integration | `true`           |
-| `alloy_integrations_node_exporter_scrape_interval` | Node Exporter scrape interval    | `"30s"`          |
-| `alloy_integrations_docker_enabled`                | Enable Docker integration        | `true`           |
-| `alloy_integrations_traefik_enabled`               | Enable Traefik integration       | `false`          |
-| `alloy_integrations_traefik_address`               | Traefik metrics endpoint address | `"traefik:8080"` |
-| `alloy_integrations_traefik_metrics_path`          | Traefik metrics path             | `"/metrics"`     |
-| `alloy_integrations_traefik_scrape_interval`       | Traefik scrape interval          | `"30s"`          |
-| `alloy_integrations_redis_enabled`                 | Enable Redis integration         | `false`          |
-| `alloy_integrations_redis_address`                 | Redis address                    | `"redis:6379"`   |
-| `alloy_integrations_redis_scrape_interval`         | Redis scrape interval            | `"30s"`          |
-| `alloy_integrations_postgres_enabled`              | Enable PostgreSQL integration    | `false`          |
-| `alloy_integrations_postgres_datasource_names`     | PostgreSQL datasource names      | `[]`             |
-| `alloy_integrations_postgres_scrape_interval`      | PostgreSQL scrape interval       | `"30s"`          |
+| Variable                                              | Description                                     | Default Value    |
+| ----------------------------------------------------- | ----------------------------------------------- | ---------------- |
+| `alloy_integrations_node_exporter_enabled`            | Enable Node Exporter integration                | `true`           |
+| `alloy_integrations_node_exporter_scrape_interval`    | Node Exporter scrape interval                   | `"30s"`          |
+| `alloy_integrations_docker_enabled`                   | Enable Docker integration                       | `true`           |
+| `alloy_integrations_traefik_enabled`                  | Enable Traefik integration                      | `false`          |
+| `alloy_integrations_traefik_address`                  | Traefik metrics endpoint address                | `"traefik:8080"` |
+| `alloy_integrations_traefik_metrics_path`             | Traefik metrics path                            | `"/metrics"`     |
+| `alloy_integrations_traefik_scrape_interval`          | Traefik scrape interval                         | `"30s"`          |
+| `alloy_integrations_redis_enabled`                    | Enable Redis integration                        | `false`          |
+| `alloy_integrations_redis_address`                    | Redis address                                   | `"redis:6379"`   |
+| `alloy_integrations_redis_scrape_interval`            | Redis scrape interval                           | `"30s"`          |
+| `alloy_integrations_postgres_enabled`                 | Enable PostgreSQL integration                   | `false`          |
+| `alloy_integrations_postgres_datasource_names`        | PostgreSQL datasource names                     | `[]`             |
+| `alloy_integrations_postgres_scrape_interval`         | PostgreSQL scrape interval                      | `"30s"`          |
+| `alloy_integrations_postgres_enabled_collectors`      | List of enabled Postgres collectors             | `[]`             |
+| `alloy_integrations_postgres_autodiscovery_enabled`   | Enable Postgres autodiscovery                   | `false`          |
+| `alloy_integrations_postgres_autodiscovery_allowlist` | List of databases to include in autodiscovery   | `[]`             |
+| `alloy_integrations_postgres_autodiscovery_denylist`  | List of databases to exclude from autodiscovery | `[]`             |
 ```
 
 ### Prometheus Rules Configuration
@@ -146,7 +149,9 @@ alloy_environment_variables:
   ALLOY_LOG_LEVEL: "debug"
 ```
 
-## Example Playbook
+## Example Playbooks
+
+### Basic Example
 
 ```yaml
 - hosts: swarm_managers
@@ -165,6 +170,34 @@ alloy_environment_variables:
         alloy_metrics_password: "your-metrics-password"
         alloy_logs_username: "your-logs-username"
         alloy_logs_password: "your-logs-password"
+```
+
+### PostgreSQL Integration with Autodiscovery
+
+```yaml
+- hosts: swarm_managers
+  become: true
+  roles:
+    - role: brpaz.swarm_grafana_alloy
+      vars:
+        alloy_cluster_name: "production"
+        alloy_integrations_postgres_enabled: true
+        alloy_integrations_postgres_datasource_names:
+          - "host=postgres port=5432 user=postgres password=secret sslmode=disable"
+        alloy_integrations_postgres_enabled_collectors:
+          - "database"
+          - "wal"
+          - "locks"
+          - "replication"
+          - "stat_database"
+        alloy_integrations_postgres_autodiscovery_enabled: true
+        alloy_integrations_postgres_autodiscovery_allowlist:
+          - "app_db"
+          - "analytics_db"
+        alloy_integrations_postgres_autodiscovery_denylist:
+          - "postgres"
+          - "template0"
+          - "template1"
 ```
 
 ## Custom Integrations
