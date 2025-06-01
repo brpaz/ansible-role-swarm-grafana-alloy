@@ -54,7 +54,6 @@ alloy_integrations_postgres_enabled_collectors:
   - "replication_slot"
   - "stat_bgwriter"
   - "stat_database"
-  - "stat_statements"
   - "stat_user_tables"
   - "statio_user_tables"
 alloy_integrations_postgres_autodiscovery_enabled: true
