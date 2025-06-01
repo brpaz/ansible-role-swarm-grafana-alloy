@@ -169,13 +169,7 @@ alloy_environment_variables:
 
 ## Custom Integrations
 
-To add custom integration files, use the `alloy_conf_import_files` variable:
-
-```yaml
-alloy_conf_import_files:
-  - name: "custom_integration"
-    filename: "custom.alloy"
-```
+To add a custom integration, place a `.alloy` file in the `/etc/alloy/` directory on the target host and restart the Alloy service. Check the [Alloy documentation](https://grafana.com/docs/alloy/latest/reference/components/) for more details.
 
 ## Testing
 
