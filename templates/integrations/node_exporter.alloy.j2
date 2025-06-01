@@ -94,3 +94,4 @@ discovery.relabel "logs_integrations_integrations_node_exporter_journal_scrape" 
 loki.source.file "logs_integrations_integrations_node_exporter_direct_scrape" {
   targets    = local.file_match.logs_integrations_integrations_node_exporter_direct_scrape.targets
   forward_to = [loki.write.logs_service.receiver]
+}
