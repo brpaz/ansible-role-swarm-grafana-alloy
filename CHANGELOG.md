@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.0 - 2025-06-01
+
+### What's Changed
+
+#### 🚀 Features
+
+- feat: add support for postgres exporter autodiscovery configuration @brpaz (#4)
+  **Full Changelog**: [https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.4...v0.2.0](https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.1.4...v0.2.0)
+
 ## v0.1.4 - 2025-05-31
 
 ### What's Changed
