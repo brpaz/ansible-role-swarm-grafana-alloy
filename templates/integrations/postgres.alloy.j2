@@ -5,14 +5,11 @@ prometheus.exporter.postgres "integrations_postgres_exporter" {
   autodiscovery {
     enabled = {{ alloy_integrations_postgres_autodiscovery_enabled | default(false) | to_json }}
 
-    database_allowlist = [{%- for db in alloy_integrations_postgres_autodiscovery_allowlist -%}"{{ db }}"{% if not loop.last %}, {% endif %}{%- endfor -%}]
-    {% endif %}{% if alloy_integrations_postgres_autodiscovery_denylist|length > 0 %}
+    database_allowlist = [{%- for db in alloy_integrations_postgres_autodiscovery_allowlist -%}"{{ db }}"{% if not loop.last %}, {% endif %}{%- endfor -%}]{% if alloy_integrations_postgres_autodiscovery_allowlist|length > 0 %}{% endif %}
 
-    database_denylist = [{%- for db in alloy_integrations_postgres_autodiscovery_denylist -%}"{{ db }}"{% if not loop.last %}, {% endif %}{%- endfor -%}]
-    {% endif %}
+    database_denylist = [{%- for db in alloy_integrations_postgres_autodiscovery_denylist -%}"{{ db }}"{% if not loop.last %}, {% endif %}{%- endfor -%}]{% if alloy_integrations_postgres_autodiscovery_denylist|length > 0 %}{% endif %}
   }
 }
-
 
 discovery.relabel "integrations_postgres_exporter" {
     targets = prometheus.exporter.postgres.integrations_postgres_exporter.targets
