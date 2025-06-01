@@ -23,16 +23,27 @@ alloy_limits_memory: 512M
 alloy_log_level: "info"
 alloy_log_format: "json"
 
+# == Alloy Integrations Configuration ==
+
+# == Node Exporter Integration ==
 alloy_integrations_node_exporter_enabled: true
 alloy_integrations_node_exporter_scrape_interval: "30s"
+
+# == Docker Integration ==
 alloy_integrations_docker_enabled: true
+
+# == Traefik Integration ==
 alloy_integrations_traefik_enabled: false
 alloy_integrations_traefik_address: "traefik:8080"
 alloy_integrations_traefik_metrics_path: "/metrics"
 alloy_integrations_traefik_scrape_interval: "30s"
+
+# == Redis Integration ==
 alloy_integrations_redis_enabled: false
 alloy_integrations_redis_address: "redis:6379"
 alloy_integrations_redis_scrape_interval: "30s"
+
+# == PostgreSQL Integration ==
 alloy_integrations_postgres_enabled: false
 alloy_integrations_postgres_datasource_names: []
 alloy_integrations_postgres_enabled_collectors:
@@ -46,13 +57,10 @@ alloy_integrations_postgres_enabled_collectors:
   - "stat_statements"
   - "stat_user_tables"
   - "statio_user_tables"
-  - "wal"
 alloy_integrations_postgres_autodiscovery_enabled: true
 alloy_integrations_postgres_autodiscovery_allowlist: []
 alloy_integrations_postgres_autodiscovery_denylist: []
-
 alloy_integrations_postgres_scrape_interval: "30s"
-alloy_conf_import_files: []
 
 # Only for tests
 alloy_check_scrape_interval: "60s"
