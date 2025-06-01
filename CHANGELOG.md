@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.1 - 2025-06-01
+
+### What's Changed
+
+#### ⚠️ Maintenance
+
+- fix: postgres template indentation @brpaz (#5)
+  **Full Changelog**: [https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.2.0...v0.2.1](https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.2.0...v0.2.1)
+
 ## v0.2.0 - 2025-06-01
 
 ### What's Changed
