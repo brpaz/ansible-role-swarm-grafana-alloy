@@ -18,8 +18,8 @@ discovery.relabel "integrations_node_exporter" {
 prometheus.exporter.unix "integrations_node_exporter" {
   disable_collectors = ["ipvs", "btrfs", "infiniband", "xfs", "zfs"]
   rootfs_path        = "/host/rootfs"
-  procfs_path        = "/host/proc"
-  sysfs_path         = "/host/sys"
+  procfs_path        = "/proc"
+  sysfs_path         = "/sys"
 
   filesystem {
     fs_types_exclude     = "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"

@@ -15,9 +15,10 @@ alloy_swarm_labels:
 
 alloy_logs_url: "https://logs-prod-us-central1.grafana.net/loki/api/v1/push"
 alloy_metrics_url: "https://prometheus-us-central1.grafana.net/api/prom/push"
-alloy_reservations_cpus: 0.5
+alloy_reservations_cpus: 0.1
 alloy_reservations_memory: 256M
 alloy_server_port: 12345
+alloy_server_port_mode: "host"
 alloy_limits_cpus: 1.0
 alloy_limits_memory: 512M
 alloy_log_level: "info"
