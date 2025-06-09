@@ -108,15 +108,16 @@
         source: alloy_data
         target: /var/lib/alloy/data
       - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
+        source: /var/run
+        target: /var/run
+        readonly: true
       - type: bind
         source: "/"
         target: /host/rootfs
         readonly: true
       - type: bind
         source: "/sys"
-        target: /host/sys
+        target: /sys
         readonly: true
       - type: bind
         source: "/var/log"
@@ -124,7 +125,8 @@
         readonly: true
       - type: bind
         source: "/proc"
-        target: "/host/proc"
+        target: "/proc"
+        readonly: true
       - type: bind
         source: "/var/lib/docker"
         target: "/var/lib/docker"
@@ -139,14 +141,14 @@
       condition: any
     hostname: "{{ inventory_hostname }}"
     publish:
-      - published_port: "{{ alloy_server_port }}"
+      - published_port: "{{ alloy_server_port | default(omit) }}"
         target_port: "{{ alloy_server_port }}"
-        mode: host
+        mode: "{{ alloy_server_port_mode }}"
     reservations:
-      cpus: "{{ alloy_reservations_cpus }}"
+      cpus: "{{ alloy_reservations_cpus | default(omit) }}"
       memory: "{{ alloy_reservations_memory }}"
     limits:
-      cpus: "{{ alloy_limits_cpus }}"
+      cpus: "{{ alloy_limits_cpus | default(omit) }}"
       memory: "{{ alloy_limits_memory }}"
     healthcheck:
       test:
