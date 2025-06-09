@@ -118,7 +118,7 @@
       - type: bind
         source: "/sys"
         target: /sys
-        readonly: true
+        readonly: false
       - type: bind
         source: "/var/log"
         target: "/host/var/log"
@@ -126,7 +126,6 @@
       - type: bind
         source: "/proc"
         target: "/proc"
-        readonly: true
       - type: bind
         source: "/var/lib/docker"
         target: "/var/lib/docker"
