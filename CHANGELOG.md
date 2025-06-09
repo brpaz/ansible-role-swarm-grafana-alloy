@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v0.2.3 - 2025-06-09
+
+### What's Changed
+
+- fix: cadvisor metrics not being reported due to missing volume mounts @brpaz (#11)
+
+#### 🧩 Dependency Updates
+
+- chore(deps): update dependency pytest to ~=8.4.0 @[renovate[bot]](https://github.com/apps/renovate) (#9)
+- chore(deps): update dependency molecule to ~=25.5.0 @[renovate[bot]](https://github.com/apps/renovate) (#8)
+- chore(deps): update dependency ansible-lint to ~=25.5.0 @[renovate[bot]](https://github.com/apps/renovate) (#7)
+  **Full Changelog**: [https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.2.2...v0.2.3](https://github.com/brpaz/ansible-role-swarm_grafana_alloy/compare/v0.2.2...v0.2.3)
+
 ## v0.2.2 - 2025-06-01
 
 ### What's Changed
